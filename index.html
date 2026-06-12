@@ -1,14 +1,150 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bruno | Portfolio</title>
-    <script type="module" crossorigin src="/assets/index-0ubopEqM.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DcF8dQYb.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portefólio de Bruno Costa — projetos em cibersegurança, cloud security, backend e engenharia informática." />
+  <meta name="theme-color" content="#07111f" />
+  <title>Bruno Costa — Cybersecurity & Cloud Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header">
+    <nav class="nav container" aria-label="Navegação principal">
+      <a class="brand" href="#top" aria-label="Início">
+        <span class="brand-mark">BC</span>
+        <span>Bruno Costa</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="#projects">Projetos</a>
+        <a href="#lab-notes">Notas</a>
+        <a href="#skills">Stack</a>
+        <a href="#about">Sobre</a>
+        <a class="nav-cta" href="mailto:Bruno.cst1@gmail.com">Contacto</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Cybersecurity · Cloud · Backend Engineering</p>
+          <h1>Portefólio técnico para projetos de segurança, cloud e engenharia aplicada.</h1>
+          <p class="hero-text">Sou estudante de Engenharia Informática com experiência em Java, Spring Boot, APIs REST, Docker, bases de dados e interesse crescente em Cloud Security, DevSecOps e cibersegurança defensiva.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#projects">Ver projetos</a>
+            <a class="btn secondary" href="https://github.com/BrunomnCosta" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+          <div class="signal-row" aria-label="Áreas de foco">
+            <span>Cloud Security</span>
+            <span>DevSecOps</span>
+            <span>API Security</span>
+            <span>Networking</span>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="Resumo técnico">
+          <div class="terminal-card">
+            <div class="terminal-top"><span></span><span></span><span></span></div>
+            <pre><code>$ whoami
+Bruno Costa
+
+$ focus --2026
+cloud-security
+api-security
+devsecops
+secure-backend
+
+$ status
+building_public_projects...</code></pre>
+          </div>
+          <div class="metrics">
+            <div><strong>Java</strong><span>Backend</span></div>
+            <div><strong>Azure/AWS</strong><span>Cloud</span></div>
+            <div><strong>Docker</strong><span>Infra</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section trust-strip">
+      <div class="container strip-grid">
+        <div><span class="strip-label">Formação</span><strong>Engenharia Informática</strong></div>
+        <div><span class="strip-label">Experiência</span><strong>Junior Java Developer</strong></div>
+        <div><span class="strip-label">Certificações</span><strong>Google Cybersecurity · AWS</strong></div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="container section-heading">
+        <p class="eyebrow">Project archive</p>
+        <h2>Projetos em destaque</h2>
+        <p>Arquivo vivo para documentar projetos, provas de conceito, write-ups e experiências práticas em segurança e cloud.</p>
+      </div>
+      <div class="container filters" role="list" aria-label="Filtros de projetos">
+        <button class="filter active" data-filter="all">Todos</button>
+        <button class="filter" data-filter="security">Security</button>
+        <button class="filter" data-filter="cloud">Cloud</button>
+        <button class="filter" data-filter="backend">Backend</button>
+        <button class="filter" data-filter="research">Research</button>
+      </div>
+      <div class="container project-grid" id="projectGrid"></div>
+    </section>
+
+    <section class="section split-section" id="lab-notes">
+      <div class="container split-grid">
+        <div>
+          <p class="eyebrow">Blog / lab notes</p>
+          <h2>Notas técnicas e progresso</h2>
+          <p>Usa esta zona para publicar pequenos artigos: configuração de labs, erros resolvidos, decisões técnicas, comparações de ferramentas e relatórios curtos.</p>
+        </div>
+        <div class="note-list" id="noteList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="container section-heading">
+        <p class="eyebrow">Technical stack</p>
+        <h2>Competências técnicas</h2>
+      </div>
+      <div class="container skills-grid">
+        <article class="skill-card"><h3>Security</h3><p>API security, vulnerability assessment, OWASP, networking fundamentals, Linux.</p></article>
+        <article class="skill-card"><h3>Cloud & Infrastructure</h3><p>Microsoft Azure, AWS, Terraform, Docker, Kubernetes, Jenkins.</p></article>
+        <article class="skill-card"><h3>Backend</h3><p>Java, Spring Boot, REST APIs, Python, FastAPI, PHP, JSP.</p></article>
+        <article class="skill-card"><h3>Data</h3><p>SQL, SQLite, MongoDB, Neo4j, Azure Cosmos DB, JSON processing.</p></article>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="container about-card">
+        <div>
+          <p class="eyebrow">About</p>
+          <h2>Perfil</h2>
+          <p>Estudante de Engenharia Informática no Instituto Politécnico de Castelo Branco, com experiência prática em desenvolvimento backend e interesse em construir projetos públicos que demonstrem competências em cibersegurança, cloud e DevSecOps.</p>
+        </div>
+        <div class="contact-card">
+          <h3>Contacto</h3>
+          <a href="mailto:Bruno.cst1@gmail.com">Bruno.cst1@gmail.com</a>
+          <a href="https://github.com/BrunomnCosta" target="_blank" rel="noreferrer">github.com/BrunomnCosta</a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Bruno Costa</span>
+      <span>Built for GitHub Pages · Static HTML/CSS/JS</span>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
 </html>
