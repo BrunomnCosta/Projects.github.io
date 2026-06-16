@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-PT" data-theme="dark" data-lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SecuritEST — Bruno Costa</title>
+  <meta name="theme-color" content="#07111f" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="../translations.js"></script>
+  <script src="../app.js"></script>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+
+  <header class="site-header">
+    <nav class="nav container" aria-label="Navegação principal" data-i18n-aria="nav_aria">
+      <a class="brand" href="../index.html" aria-label="Início" data-i18n-aria="brand_aria">
+        <span class="brand-mark">BC</span>
+        <span>Bruno Costa</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Abrir menu" data-i18n-aria="nav_open" aria-expanded="false">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="../index.html#projects" data-i18n="nav_projects">Projetos</a>
+        <a href="../index.html#lab-notes" data-i18n="nav_notes">Notas</a>
+        <a href="../index.html#skills" data-i18n="nav_skills">Stack</a>
+        <a href="../index.html#about" data-i18n="nav_about">Sobre</a>
+        <a class="nav-cta" href="mailto:Bruno.cst1@gmail.com" data-i18n="nav_contact">Contacto</a>
+        <div class="nav-controls">
+          <button class="icon-toggle" id="langToggle" type="button" data-i18n-aria="lang_toggle_label" aria-label="Mudar para inglês">
+            <span class="lang-code">EN</span>
+          </button>
+          <button class="icon-toggle" id="themeToggle" type="button" data-i18n-aria="theme_toggle_label" aria-label="Alternar tema claro/escuro">
+            <span class="moon">🌙</span><span class="sun">☀️</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="case-hero container">
+      <p class="breadcrumb"><a href="../index.html#projects" data-i18n="back_to_projects">← Voltar aos projetos</a></p>
+
+      <p class="case-tagline" data-lang-block="pt">Caso de estudo · Em produção</p>
+      <p class="case-tagline" data-lang-block="en">Case study · Live</p>
+
+      <h1>SecuritEST — API Security Scanner</h1>
+
+      <p class="case-lede" data-lang-block="pt">Scanner de segurança para APIs REST que analisa endpoints, calcula uma pontuação de risco com base no OWASP API Security Top 10 e mantém um histórico de resultados. Implementado e em execução na Azure, com infraestrutura definida como código.</p>
+      <p class="case-lede" data-lang-block="en">A security scanner for REST APIs that analyses endpoints, scores risk against the OWASP API Security Top 10, and keeps a history of results. Deployed and running on Azure, with infrastructure defined as code.</p>
+
+      <div class="case-meta-grid">
+        <div>
+          <span data-lang-block="pt">Tipo</span><span data-lang-block="en">Type</span>
+          <strong data-lang-block="pt">Projeto pessoal</strong><strong data-lang-block="en">Personal project</strong>
+        </div>
+        <div>
+          <span data-lang-block="pt">Estado</span><span data-lang-block="en">Status</span>
+          <strong data-lang-block="pt">Em produção (Azure)</strong><strong data-lang-block="en">Live on Azure</strong>
+        </div>
+        <div>
+          <span data-lang-block="pt">Core</span><span data-lang-block="en">Core</span>
+          <strong>FastAPI + React</strong>
+        </div>
+        <div>
+          <span data-lang-block="pt">Infraestrutura</span><span data-lang-block="en">Infrastructure</span>
+          <strong>Terraform · Docker · GitHub Actions</strong>
+        </div>
+      </div>
+
+      <div class="case-links">
+        <a class="btn primary disabled" id="repoLink" target="_blank" rel="noreferrer">
+          <span data-lang-block="pt">Repositório no GitHub</span><span data-lang-block="en">GitHub repository</span>
+        </a>
+        <a class="btn secondary disabled" id="demoLink" target="_blank" rel="noreferrer">
+          <span data-lang-block="pt">Ver demo live</span><span data-lang-block="en">View live demo</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">O problema</h2>
+        <h2 data-lang-block="en">The problem</h2>
+
+        <p data-lang-block="pt">APIs são um dos vetores de ataque mais comuns em aplicações modernas — autenticação fraca, falta de rate limiting, exposição excessiva de dados e configurações de CORS incorretas continuam a aparecer em incidentes reais. Muitas equipas pequenas não têm tempo nem ferramentas para verificar estes pontos de forma sistemática antes de publicar uma API.</p>
+        <p data-lang-block="pt">O SecuritEST nasceu da vontade de ter uma ferramenta simples: aponta-se a um endpoint, corre-se uma análise alinhada com o OWASP API Security Top 10, e obtém-se uma pontuação de risco e um histórico de resultados ao longo do tempo.</p>
+
+        <p data-lang-block="en">APIs remain one of the most common attack surfaces in modern applications — weak authentication, missing rate limiting, excessive data exposure, and misconfigured CORS keep showing up in real incidents. Many small teams don't have the time or tooling to check for these issues systematically before shipping an API.</p>
+        <p data-lang-block="en">SecuritEST was built to be a simple tool for that: point it at an endpoint, run a check aligned with the OWASP API Security Top 10, and get back a risk score plus a history of results over time.</p>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">Arquitetura</h2>
+        <h2 data-lang-block="en">Architecture</h2>
+
+        <p data-lang-block="pt">O backend é uma API em FastAPI (Python) que executa as verificações de segurança e calcula a pontuação de risco. O frontend em React permite submeter um endpoint, acompanhar o progresso da análise e consultar o histórico. Os resultados são guardados no Azure Cosmos DB.</p>
+        <p data-lang-block="pt">A aplicação corre containerizada em Docker, publicada no Azure Container Registry e executada no Azure Container Instances. Toda a infraestrutura — ACR, ACI, Cosmos DB e rede — está definida em Terraform, e o pipeline de CI/CD no GitHub Actions automatiza o build, push da imagem e deploy a cada alteração.</p>
+
+        <p data-lang-block="en">The backend is a FastAPI (Python) service that runs the security checks and computes the risk score. The React frontend lets you submit an endpoint, follow the scan progress, and browse the history. Results are stored in Azure Cosmos DB.</p>
+        <p data-lang-block="en">The app runs containerized with Docker, published to Azure Container Registry, and executed on Azure Container Instances. All infrastructure — ACR, ACI, Cosmos DB, and networking — is defined in Terraform, and a GitHub Actions pipeline automates the build, image push, and deploy on every change.</p>
+
+        <div class="diagram-card">
+          <svg viewBox="0 0 800 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram: React frontend, FastAPI on Azure Container Instances, Cosmos DB, provisioned and deployed via Terraform and GitHub Actions.">
+            <g style="font-size:15px; font-weight:700;" text-anchor="middle">
+              <!-- React -->
+              <rect x="20" y="70" width="170" height="80" rx="14" style="fill:var(--panel-solid); stroke:var(--line);" stroke-width="1.5"/>
+              <text x="105" y="105" style="fill:var(--text)">React</text>
+              <text x="105" y="128" style="fill:var(--muted); font-size:12px; font-weight:600;">Frontend</text>
+
+              <!-- Arrow 1 -->
+              <line x1="190" y1="110" x2="290" y2="110" style="stroke:var(--accent);" stroke-width="2"/>
+              <polygon points="290,104 304,110 290,116" style="fill:var(--accent)"/>
+
+              <!-- FastAPI / ACI -->
+              <rect x="310" y="60" width="190" height="100" rx="14" style="fill:var(--panel-solid); stroke:var(--accent);" stroke-width="1.5"/>
+              <text x="405" y="100" style="fill:var(--text)">FastAPI</text>
+              <text x="405" y="122" style="fill:var(--muted); font-size:12px; font-weight:600;">Azure Container Instances</text>
+              <text x="405" y="142" style="fill:var(--muted); font-size:12px; font-weight:600;">via Azure Container Registry</text>
+
+              <!-- Arrow 2 -->
+              <line x1="500" y1="110" x2="600" y2="110" style="stroke:var(--accent);" stroke-width="2"/>
+              <polygon points="600,104 614,110 600,116" style="fill:var(--accent)"/>
+
+              <!-- Cosmos DB -->
+              <rect x="620" y="70" width="160" height="80" rx="14" style="fill:var(--panel-solid); stroke:var(--accent-2);" stroke-width="1.5"/>
+              <text x="700" y="105" style="fill:var(--text)">Cosmos DB</text>
+              <text x="700" y="128" style="fill:var(--muted); font-size:12px; font-weight:600;">Scan history</text>
+
+              <!-- Terraform + GH Actions box -->
+              <rect x="200" y="185" width="400" height="40" rx="12" style="fill:none; stroke:var(--line); stroke-dasharray:4 4;" stroke-width="1.5"/>
+              <text x="400" y="210" style="fill:var(--muted); font-size:12px; font-weight:700;">Terraform (infra) · GitHub Actions (build → push → deploy)</text>
+
+              <!-- connectors from TF/GHA box up to ACR/ACI box -->
+              <line x1="400" y1="185" x2="405" y2="160" style="stroke:var(--line);" stroke-width="1.5" stroke-dasharray="3 3"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">O que foi feito</h2>
+        <h2 data-lang-block="en">What was built</h2>
+
+        <ol class="steps-list">
+          <li>
+            <span class="step-index">1</span>
+            <div>
+              <h3 data-lang-block="pt">Definição do modelo de ameaça</h3>
+              <h3 data-lang-block="en">Defined the threat model</h3>
+              <p data-lang-block="pt">Escolha das categorias do OWASP API Security Top 10 a verificar e definição de como traduzir cada verificação numa pontuação de risco.</p>
+              <p data-lang-block="en">Chose which OWASP API Security Top 10 categories to check and defined how each check maps to a risk score.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">2</span>
+            <div>
+              <h3 data-lang-block="pt">Motor de análise em FastAPI</h3>
+              <h3 data-lang-block="en">FastAPI scanning engine</h3>
+              <p data-lang-block="pt">Implementação dos endpoints que recebem um URL, executam as verificações e devolvem o resultado e a pontuação.</p>
+              <p data-lang-block="en">Built the endpoints that take a target URL, run the checks, and return the result and score.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">3</span>
+            <div>
+              <h3 data-lang-block="pt">Persistência no Cosmos DB</h3>
+              <h3 data-lang-block="en">Cosmos DB persistence</h3>
+              <p data-lang-block="pt">Modelação dos dados de cada análise (endpoint, resultado, score, timestamp) para permitir consultar o histórico.</p>
+              <p data-lang-block="en">Modelled scan data (endpoint, results, score, timestamp) to support browsing scan history.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">4</span>
+            <div>
+              <h3 data-lang-block="pt">Frontend em React</h3>
+              <h3 data-lang-block="en">React frontend</h3>
+              <p data-lang-block="pt">Interface para submeter um endpoint, acompanhar a análise e visualizar o histórico de resultados.</p>
+              <p data-lang-block="en">Interface to submit an endpoint, track the scan, and view the results history.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">5</span>
+            <div>
+              <h3 data-lang-block="pt">Containerização</h3>
+              <h3 data-lang-block="en">Containerization</h3>
+              <p data-lang-block="pt">Dockerfiles para backend e frontend, garantindo um ambiente de execução consistente.</p>
+              <p data-lang-block="en">Dockerfiles for backend and frontend, ensuring a consistent runtime environment.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">6</span>
+            <div>
+              <h3 data-lang-block="pt">Infraestrutura com Terraform</h3>
+              <h3 data-lang-block="en">Infrastructure with Terraform</h3>
+              <p data-lang-block="pt">Definição do ACR, ACI, Cosmos DB e configuração de rede como código, para criar e destruir o ambiente de forma reprodutível.</p>
+              <p data-lang-block="en">Defined ACR, ACI, Cosmos DB, and networking as code, so the environment can be created and destroyed reproducibly.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">7</span>
+            <div>
+              <h3 data-lang-block="pt">CI/CD com GitHub Actions</h3>
+              <h3 data-lang-block="en">CI/CD with GitHub Actions</h3>
+              <p data-lang-block="pt">Pipeline que constrói as imagens, faz push para o ACR e atualiza o deployment no ACI a cada alteração no repositório.</p>
+              <p data-lang-block="en">Pipeline that builds the images, pushes to ACR, and updates the ACI deployment on every push to the repository.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">8</span>
+            <div>
+              <h3 data-lang-block="pt">Deploy e validação na Azure</h3>
+              <h3 data-lang-block="en">Deployed and validated on Azure</h3>
+              <p data-lang-block="pt">Ambiente final em execução na Azure, com o pipeline a manter a aplicação atualizada.</p>
+              <p data-lang-block="en">Final environment running on Azure, with the pipeline keeping the app up to date.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">Estado atual e próximos passos</h2>
+        <h2 data-lang-block="en">Current status &amp; next steps</h2>
+
+        <div class="case-callout">
+          <p data-lang-block="pt"><strong>Estado:</strong> o scanner cobre um conjunto inicial de verificações do OWASP API Security Top 10 e está em execução na Azure. Próximos passos previstos: alargar a cobertura de verificações, adicionar autenticação de utilizadores e relatórios exportáveis.</p>
+          <p data-lang-block="en"><strong>Status:</strong> the scanner covers an initial set of OWASP API Security Top 10 checks and is running on Azure. Planned next steps: broaden check coverage, add user authentication, and exportable reports.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Bruno Costa</span>
+      <span data-i18n="footer_built">Built for GitHub Pages · Static HTML/CSS/JS</span>
+    </div>
+  </footer>
+
+  <script src="../data.js"></script>
+  <script>
+    document.querySelector('#year').textContent = new Date().getFullYear();
+
+    document.querySelector('.nav-toggle').addEventListener('click', () => {
+      const navLinks = document.querySelector('#navLinks');
+      const isOpen = navLinks.classList.toggle('open');
+      document.querySelector('.nav-toggle').setAttribute('aria-expanded', String(isOpen));
+    });
+
+    const repoLink = document.querySelector('#repoLink');
+    const demoLink = document.querySelector('#demoLink');
+    if (SITE_LINKS.securitest.repo) {
+      repoLink.href = SITE_LINKS.securitest.repo;
+      repoLink.classList.remove('disabled');
+    }
+    if (SITE_LINKS.securitest.demo) {
+      demoLink.href = SITE_LINKS.securitest.demo;
+      demoLink.classList.remove('disabled');
+    }
+  </script>
+</body>
+</html>

@@ -9,23 +9,33 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="translations.js"></script>
+  <script src="app.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
   <header class="site-header">
-    <nav class="nav container" aria-label="Navegação principal">
-      <a class="brand" href="#top" aria-label="Início">
+    <nav class="nav container" aria-label="Navegação principal" data-i18n-aria="nav_aria">
+      <a class="brand" href="#top" aria-label="Início" data-i18n-aria="brand_aria">
         <span class="brand-mark">BC</span>
         <span>Bruno Costa</span>
       </a>
-      <button class="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <button class="nav-toggle" type="button" aria-label="Abrir menu" data-i18n-aria="nav_open" aria-expanded="false">☰</button>
       <div class="nav-links" id="navLinks">
-        <a href="#projects">Projetos</a>
-        <a href="#lab-notes">Notas</a>
-        <a href="#skills">Stack</a>
-        <a href="#about">Sobre</a>
-        <a class="nav-cta" href="mailto:Bruno.cst1@gmail.com">Contacto</a>
+        <a href="#projects" data-i18n="nav_projects">Projetos</a>
+        <a href="#lab-notes" data-i18n="nav_notes">Notas</a>
+        <a href="#skills" data-i18n="nav_skills">Stack</a>
+        <a href="#about" data-i18n="nav_about">Sobre</a>
+        <a class="nav-cta" href="mailto:Bruno.cst1@gmail.com" data-i18n="nav_contact">Contacto</a>
+        <div class="nav-controls">
+          <button class="icon-toggle" id="langToggle" type="button" data-i18n-aria="lang_toggle_label" aria-label="Mudar para inglês">
+            <span class="lang-code">EN</span>
+          </button>
+          <button class="icon-toggle" id="themeToggle" type="button" data-i18n-aria="theme_toggle_label" aria-label="Alternar tema claro/escuro">
+            <span class="moon">🌙</span><span class="sun">☀️</span>
+          </button>
+        </div>
       </div>
     </nav>
   </header>
@@ -34,12 +44,12 @@
     <section class="hero section">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Cybersecurity · Cloud · Backend Engineering</p>
-          <h1>Portefólio técnico para projetos de segurança, cloud e engenharia aplicada.</h1>
-          <p class="hero-text">Sou estudante de Engenharia Informática com experiência em Java, Spring Boot, APIs REST, Docker, bases de dados e interesse crescente em Cloud Security, DevSecOps e cibersegurança defensiva.</p>
+          <p class="eyebrow" data-i18n="hero_eyebrow">Cybersecurity · Cloud · Backend Engineering</p>
+          <h1 data-i18n="hero_title">Portefólio técnico para projetos de segurança, cloud e engenharia aplicada.</h1>
+          <p class="hero-text" data-i18n="hero_text">Sou estudante de Engenharia Informática com experiência em Java, Spring Boot, APIs REST, Docker, bases de dados e interesse crescente em Cloud Security, DevSecOps e cibersegurança defensiva.</p>
           <div class="hero-actions">
-            <a class="btn primary" href="#projects">Ver projetos</a>
-            <a class="btn secondary" href="https://github.com/BrunomnCosta" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="btn primary" href="#projects" data-i18n="hero_cta_projects">Ver projetos</a>
+            <a class="btn secondary" href="https://github.com/BrunomnCosta" target="_blank" rel="noreferrer" data-i18n="hero_cta_github">GitHub</a>
           </div>
           <div class="signal-row" aria-label="Áreas de foco">
             <span>Cloud Security</span>
@@ -74,24 +84,24 @@ building_public_projects...</code></pre>
 
     <section class="section trust-strip">
       <div class="container strip-grid">
-        <div><span class="strip-label">Formação</span><strong>Engenharia Informática</strong></div>
-        <div><span class="strip-label">Experiência</span><strong>Junior Java Developer</strong></div>
-        <div><span class="strip-label">Certificações</span><strong>Google Cybersecurity · AWS</strong></div>
+        <div><span class="strip-label" data-i18n="strip_education_label">Formação</span><strong data-i18n="strip_education_value">Engenharia Informática</strong></div>
+        <div><span class="strip-label" data-i18n="strip_experience_label">Experiência</span><strong data-i18n="strip_experience_value">Junior Java Developer</strong></div>
+        <div><span class="strip-label" data-i18n="strip_certs_label">Certificações</span><strong data-i18n="strip_certs_value">Google Cybersecurity · AWS</strong></div>
       </div>
     </section>
 
     <section class="section" id="projects">
       <div class="container section-heading">
-        <p class="eyebrow">Project archive</p>
-        <h2>Projetos em destaque</h2>
-        <p>Arquivo vivo para documentar projetos, provas de conceito, write-ups e experiências práticas em segurança e cloud.</p>
+        <p class="eyebrow" data-i18n="projects_eyebrow">Project archive</p>
+        <h2 data-i18n="projects_title">Projetos em destaque</h2>
+        <p data-i18n="projects_intro">Arquivo vivo para documentar projetos, provas de conceito, write-ups e experiências práticas em segurança e cloud.</p>
       </div>
       <div class="container filters" role="list" aria-label="Filtros de projetos">
-        <button class="filter active" data-filter="all">Todos</button>
-        <button class="filter" data-filter="security">Security</button>
-        <button class="filter" data-filter="cloud">Cloud</button>
-        <button class="filter" data-filter="backend">Backend</button>
-        <button class="filter" data-filter="research">Research</button>
+        <button class="filter active" data-filter="all" data-i18n="filter_all">Todos</button>
+        <button class="filter" data-filter="security" data-i18n="filter_security">Security</button>
+        <button class="filter" data-filter="cloud" data-i18n="filter_cloud">Cloud</button>
+        <button class="filter" data-filter="backend" data-i18n="filter_backend">Backend</button>
+        <button class="filter" data-filter="research" data-i18n="filter_research">Research</button>
       </div>
       <div class="container project-grid" id="projectGrid"></div>
     </section>
@@ -99,9 +109,9 @@ building_public_projects...</code></pre>
     <section class="section split-section" id="lab-notes">
       <div class="container split-grid">
         <div>
-          <p class="eyebrow">Blog / lab notes</p>
-          <h2>Notas técnicas e progresso</h2>
-          <p>Usa esta zona para publicar pequenos artigos: configuração de labs, erros resolvidos, decisões técnicas, comparações de ferramentas e relatórios curtos.</p>
+          <p class="eyebrow" data-i18n="notes_eyebrow">Blog / lab notes</p>
+          <h2 data-i18n="notes_title">Notas técnicas e progresso</h2>
+          <p data-i18n="notes_intro">Usa esta zona para publicar pequenos artigos: configuração de labs, erros resolvidos, decisões técnicas, comparações de ferramentas e relatórios curtos.</p>
         </div>
         <div class="note-list" id="noteList"></div>
       </div>
@@ -109,29 +119,29 @@ building_public_projects...</code></pre>
 
     <section class="section" id="skills">
       <div class="container section-heading">
-        <p class="eyebrow">Technical stack</p>
-        <h2>Competências técnicas</h2>
+        <p class="eyebrow" data-i18n="skills_eyebrow">Technical stack</p>
+        <h2 data-i18n="skills_title">Competências técnicas</h2>
       </div>
       <div class="container skills-grid">
-        <article class="skill-card"><h3>Security</h3><p>API security, vulnerability assessment, OWASP, networking fundamentals, Linux.</p></article>
-        <article class="skill-card"><h3>Cloud & Infrastructure</h3><p>Microsoft Azure, AWS, Terraform, Docker, Kubernetes, Jenkins.</p></article>
-        <article class="skill-card"><h3>Backend</h3><p>Java, Spring Boot, REST APIs, Python, FastAPI, PHP, JSP.</p></article>
-        <article class="skill-card"><h3>Data</h3><p>SQL, SQLite, MongoDB, Neo4j, Azure Cosmos DB, JSON processing.</p></article>
+        <article class="skill-card"><h3>Security</h3><p data-i18n="skill_security_text">API security, vulnerability assessment, OWASP, networking fundamentals, Linux.</p></article>
+        <article class="skill-card"><h3>Cloud &amp; Infrastructure</h3><p data-i18n="skill_cloud_text">Microsoft Azure, AWS, Terraform, Docker, Kubernetes, Jenkins.</p></article>
+        <article class="skill-card"><h3>Backend</h3><p data-i18n="skill_backend_text">Java, Spring Boot, REST APIs, Python, FastAPI, PHP, JSP.</p></article>
+        <article class="skill-card"><h3>Data</h3><p data-i18n="skill_data_text">SQL, SQLite, MongoDB, Neo4j, Azure Cosmos DB, JSON processing.</p></article>
       </div>
     </section>
 
     <section class="section about" id="about">
       <div class="container about-card">
         <div>
-          <p class="eyebrow">About</p>
-          <h2>Perfil</h2>
-          <p>Estudante de Engenharia Informática no Instituto Politécnico de Castelo Branco, com experiência prática em desenvolvimento backend e interesse em construir projetos públicos que demonstrem competências em cibersegurança, cloud e DevSecOps.</p>
+          <p class="eyebrow" data-i18n="about_eyebrow">About</p>
+          <h2 data-i18n="about_title">Perfil</h2>
+          <p data-i18n="about_text">Estudante de Engenharia Informática no Instituto Politécnico de Castelo Branco, com experiência prática em desenvolvimento backend e interesse em construir projetos públicos que demonstrem competências em cibersegurança, cloud e DevSecOps.</p>
         </div>
         <div class="contact-card">
-          <h3>Contacto</h3>
+          <h3 data-i18n="contact_title">Contacto</h3>
           <a href="mailto:Bruno.cst1@gmail.com">Bruno.cst1@gmail.com</a>
           <a href="https://github.com/BrunomnCosta" target="_blank" rel="noreferrer">github.com/BrunomnCosta</a>
-          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a id="linkedinLink" href="#" target="_blank" rel="noreferrer">LinkedIn</a>
         </div>
       </div>
     </section>
@@ -140,7 +150,7 @@ building_public_projects...</code></pre>
   <footer class="footer">
     <div class="container footer-inner">
       <span>© <span id="year"></span> Bruno Costa</span>
-      <span>Built for GitHub Pages · Static HTML/CSS/JS</span>
+      <span data-i18n="footer_built">Built for GitHub Pages · Static HTML/CSS/JS</span>
     </div>
   </footer>
 

@@ -108,4 +108,166 @@ pre { margin: 0; padding: 24px; color: #d7fbe8; white-space: pre-wrap; font-size
   .hero { padding-top: 76px; }
   .section { padding: 66px 0; }
   .metrics { grid-template-columns: 1fr; }
+  .nav-controls { margin: 12px 0 0; padding-top: 14px; border-top: 1px solid var(--line); justify-content: center; }
+  .case-hero { padding-top: 96px; }
 }
+
+/* ============================================================
+   THEME SYSTEM — light/dark
+   The terminal card is intentionally exempt: a terminal is
+   always dark, regardless of the page theme around it.
+   ============================================================ */
+:root {
+  --term-bg: #07111f;
+  --term-line: rgba(125, 211, 252, 0.22);
+  --term-text: #d7fbe8;
+  --term-chrome: rgba(255, 255, 255, 0.04);
+  --term-glow: 0 24px 70px rgba(8, 47, 73, 0.45);
+}
+
+:root[data-theme="light"] {
+  --bg: #eef2f8;
+  --bg-soft: #e4eaf3;
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel-solid: #ffffff;
+  --text: #0f1b2d;
+  --muted: #5b7290;
+  --line: rgba(15, 40, 80, 0.12);
+  --accent: #0369a1;
+  --accent-2: #15803d;
+  --warning: #b45309;
+  --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(circle at top left, rgba(3, 105, 161, 0.08), transparent 32rem),
+    radial-gradient(circle at 80% 10%, rgba(21, 128, 61, 0.06), transparent 28rem),
+    var(--bg);
+}
+
+:root[data-theme="light"] .noise { opacity: .025; }
+:root[data-theme="light"] .site-header { background: rgba(238, 242, 248, .82); }
+:root[data-theme="light"] .brand-mark { color: #f4f9ff; box-shadow: 0 0 24px rgba(3, 105, 161, .22); }
+:root[data-theme="light"] .btn.primary { color: #f4f9ff; }
+:root[data-theme="light"] .filter.active,
+:root[data-theme="light"] .filter:hover { color: #f4f9ff; }
+
+/* Terminal card stays dark in both themes */
+.terminal-card { background: var(--term-bg) !important; border-color: var(--term-line) !important; box-shadow: var(--term-glow); }
+.terminal-top { background: var(--term-chrome) !important; border-color: var(--term-line) !important; }
+.terminal-top span { background: #38bdf8; }
+.terminal-top span:nth-child(2) { background: #facc15; }
+.terminal-top span:nth-child(3) { background: #22c55e; }
+pre { color: var(--term-text) !important; }
+
+/* ============================================================
+   NAV CONTROLS — language + theme toggles
+   ============================================================ */
+.nav-controls { display: flex; align-items: center; gap: 10px; margin-left: 10px; }
+.icon-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 40px; min-width: 40px; padding: 0 12px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(255,255,255,.03); color: var(--text);
+  font-weight: 800; font-size: .82rem; letter-spacing: .04em;
+  cursor: pointer; transition: border-color .2s ease, color .2s ease;
+}
+.icon-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.icon-toggle .sun { display: none; }
+:root[data-theme="light"] .icon-toggle .sun { display: inline; }
+:root[data-theme="light"] .icon-toggle .moon { display: none; }
+
+/* ============================================================
+   LANGUAGE VISIBILITY
+   ============================================================ */
+:root[data-lang="pt"] [data-lang-block="en"] { display: none; }
+:root[data-lang="en"] [data-lang-block="pt"] { display: none; }
+
+/* ============================================================
+   PROJECT STATUS / COMING SOON
+   ============================================================ */
+.status.is-live { color: var(--accent-2); }
+.status.is-progress { color: var(--accent); }
+.status.is-soon { color: var(--warning); }
+.project-card.is-soon { opacity: .72; }
+.project-card.is-soon .card-actions a.disabled,
+.card-actions span.disabled {
+  color: var(--muted); cursor: default; pointer-events: none;
+}
+
+/* ============================================================
+   CASE-STUDY PAGES
+   ============================================================ */
+.breadcrumb { color: var(--muted); font-size: .9rem; margin-bottom: 18px; display: inline-flex; gap: 8px; align-items: center; }
+.breadcrumb a { color: var(--accent); font-weight: 700; }
+.case-hero { padding-top: 132px; padding-bottom: 40px; }
+.case-tagline { color: var(--accent); text-transform: uppercase; letter-spacing: .18em; font-size: .78rem; font-weight: 800; margin: 0 0 14px; }
+.case-hero h1 { font-size: clamp(2.4rem, 5.5vw, 4.2rem); max-width: 920px; }
+.case-lede { color: var(--muted); font-size: 1.1rem; max-width: 760px; margin-top: 18px; }
+.case-meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 34px 0 0; }
+.case-meta-grid div { padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+.case-meta-grid span { display: block; color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
+.case-meta-grid strong { font-size: .98rem; }
+.case-links { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+.btn.disabled { opacity: .45; pointer-events: none; }
+
+.case-section { padding: 56px 0; border-top: 1px solid var(--line); }
+.case-section:first-of-type { border-top: none; }
+.case-section .container { max-width: 880px; }
+.case-section h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 18px; }
+.case-section p { color: var(--muted); font-size: 1.04rem; max-width: 760px; }
+.case-section p + p { margin-top: 14px; }
+
+.steps-list { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 16px; }
+.steps-list li { display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: start; }
+.steps-list .step-index {
+  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px;
+  background: var(--panel); border: 1px solid var(--line); color: var(--accent); font-weight: 800;
+}
+.steps-list h3 { font-size: 1.05rem; margin-bottom: 6px; }
+.steps-list p { margin: 0; }
+
+.case-callout {
+  margin-top: 22px; padding: 18px 22px; border-radius: 18px;
+  border: 1px solid var(--line); background: var(--panel);
+  color: var(--muted); font-size: .96rem;
+}
+.case-callout strong { color: var(--text); }
+
+@media (max-width: 860px) {
+  .case-meta-grid { grid-template-columns: 1fr 1fr; }
+  .steps-list li { grid-template-columns: 36px 1fr; }
+  .steps-list .step-index { width: 36px; height: 36px; font-size: .9rem; }
+}
+
+/* ============================================================
+   LIGHT THEME POLISH
+   A handful of surfaces use hardcoded rgba(255,255,255,x)
+   "lighten" overlays that were designed for a dark background.
+   On light backgrounds these become invisible or low-contrast,
+   so give them a tinted equivalent.
+   ============================================================ */
+:root[data-theme="light"] .signal-row span,
+:root[data-theme="light"] .stack-list span {
+  color: #0c4a6e;
+  background: rgba(3, 105, 161, 0.08);
+}
+:root[data-theme="light"] .metrics div,
+:root[data-theme="light"] .strip-grid div,
+:root[data-theme="light"] .contact-card,
+:root[data-theme="light"] .terminal-top,
+:root[data-theme="light"] .filter,
+:root[data-theme="light"] .icon-toggle,
+:root[data-theme="light"] .btn.secondary {
+  background: rgba(3, 105, 161, 0.05);
+}
+:root[data-theme="light"] .terminal-top { background: var(--term-chrome); }
+
+/* Architecture / pipeline diagrams on case-study pages */
+.diagram-card {
+  border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius);
+  padding: 24px; margin-top: 26px; box-shadow: var(--shadow);
+}
+.diagram-card svg { width: 100%; height: auto; display: block; }
+.diagram-card text { font-family: Inter, system-ui, sans-serif; }

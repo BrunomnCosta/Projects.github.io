@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-PT" data-theme="dark" data-lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hawk-Eye Padel — Bruno Costa</title>
+  <meta name="theme-color" content="#07111f" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="../translations.js"></script>
+  <script src="../app.js"></script>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+
+  <header class="site-header">
+    <nav class="nav container" aria-label="Navegação principal" data-i18n-aria="nav_aria">
+      <a class="brand" href="../index.html" aria-label="Início" data-i18n-aria="brand_aria">
+        <span class="brand-mark">BC</span>
+        <span>Bruno Costa</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Abrir menu" data-i18n-aria="nav_open" aria-expanded="false">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="../index.html#projects" data-i18n="nav_projects">Projetos</a>
+        <a href="../index.html#lab-notes" data-i18n="nav_notes">Notas</a>
+        <a href="../index.html#skills" data-i18n="nav_skills">Stack</a>
+        <a href="../index.html#about" data-i18n="nav_about">Sobre</a>
+        <a class="nav-cta" href="mailto:Bruno.cst1@gmail.com" data-i18n="nav_contact">Contacto</a>
+        <div class="nav-controls">
+          <button class="icon-toggle" id="langToggle" type="button" data-i18n-aria="lang_toggle_label" aria-label="Mudar para inglês">
+            <span class="lang-code">EN</span>
+          </button>
+          <button class="icon-toggle" id="themeToggle" type="button" data-i18n-aria="theme_toggle_label" aria-label="Alternar tema claro/escuro">
+            <span class="moon">🌙</span><span class="sun">☀️</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="case-hero container">
+      <p class="breadcrumb"><a href="../index.html#projects" data-i18n="back_to_projects">← Voltar aos projetos</a></p>
+
+      <p class="case-tagline" data-lang-block="pt">Caso de estudo · Em curso</p>
+      <p class="case-tagline" data-lang-block="en">Case study · In progress</p>
+
+      <h1 data-lang-block="pt">Hawk-Eye Padel — Visão Computacional para Padel</h1>
+      <h1 data-lang-block="en">Hawk-Eye Padel — Computer Vision for Padel</h1>
+
+      <p class="case-lede" data-lang-block="pt">Sistema de visão computacional que deteta a bola em vídeo de jogo com YOLOv8 e classifica o impacto na superfície, com o objetivo de correr numa aplicação Android em tempo real. Projeto de tese (Projeto II).</p>
+      <p class="case-lede" data-lang-block="en">A computer-vision system that detects the ball in match footage with YOLOv8 and classifies its impact on the court surface, aimed at running in a real-time Android app. Final-year thesis project (Projeto II).</p>
+
+      <div class="case-meta-grid">
+        <div>
+          <span data-lang-block="pt">Tipo</span><span data-lang-block="en">Type</span>
+          <strong data-lang-block="pt">Tese académica (Projeto II)</strong><strong data-lang-block="en">Academic thesis (Projeto II)</strong>
+        </div>
+        <div>
+          <span data-lang-block="pt">Estado</span><span data-lang-block="en">Status</span>
+          <strong data-lang-block="pt">Em desenvolvimento</strong><strong data-lang-block="en">In progress</strong>
+        </div>
+        <div>
+          <span data-lang-block="pt">Core</span><span data-lang-block="en">Core</span>
+          <strong>YOLOv8 + OpenCV</strong>
+        </div>
+        <div>
+          <span data-lang-block="pt">Alvo de deployment</span><span data-lang-block="en">Deployment target</span>
+          <strong data-lang-block="pt">Android (tempo real)</strong><strong data-lang-block="en">Android (real time)</strong>
+        </div>
+      </div>
+
+      <div class="case-links">
+        <a class="btn primary disabled" id="repoLink" target="_blank" rel="noreferrer">
+          <span data-lang-block="pt">Repositório no GitHub</span><span data-lang-block="en">GitHub repository</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">O problema</h2>
+        <h2 data-lang-block="en">The problem</h2>
+
+        <p data-lang-block="pt">No padel amador e em clubes, decisões sobre se uma bola tocou dentro ou fora do limite, ou se houve um segundo toque, dependem quase sempre da perceção dos jogadores — sem qualquer apoio tecnológico. Sistemas profissionais de "Hawk-Eye" existem no ténis e noutros desportos, mas têm um custo incompatível com a maioria dos clubes de padel.</p>
+        <p data-lang-block="pt">O objetivo deste projeto é explorar até onde é possível chegar com uma câmara comum e modelos de visão computacional leves o suficiente para correr num telemóvel, detetando a bola e classificando o tipo de impacto a partir do vídeo de jogo.</p>
+
+        <p data-lang-block="en">In amateur and club-level padel, calls about whether a ball landed in or out, or whether a double bounce occurred, almost always rely on player perception alone, with no technological support. Professional "Hawk-Eye" systems exist in tennis and other sports, but at a cost most padel clubs can't justify.</p>
+        <p data-lang-block="en">This project explores how far a regular camera and computer-vision models light enough to run on a phone can go in detecting the ball and classifying impact type from match footage.</p>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">Abordagem</h2>
+        <h2 data-lang-block="en">Approach</h2>
+
+        <p data-lang-block="pt">O pipeline parte de vídeo de jogo: cada frame passa por um modelo YOLOv8 treinado para detetar a bola, gerando uma sequência de posições ao longo do tempo. Essa trajetória é depois analisada por um algoritmo de classificação de impacto, que identifica o momento e o tipo de contacto da bola com a superfície (por exemplo, quicar dentro vs. fora dos limites). A versão final do pipeline deverá correr numa aplicação Android, com inferência em tempo real.</p>
+
+        <p data-lang-block="en">The pipeline starts from match video: each frame goes through a YOLOv8 model trained to detect the ball, producing a sequence of positions over time. That trajectory is then analysed by an impact-classification algorithm, which identifies when and how the ball contacts the surface (e.g. bouncing in vs. out of bounds). The final pipeline is intended to run inside an Android app with real-time inference.</p>
+
+        <div class="diagram-card">
+          <svg viewBox="0 0 800 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: match video, YOLOv8 ball detection, trajectory tracking, impact classification, result.">
+            <g style="font-size:14px; font-weight:700;" text-anchor="middle">
+              <rect x="10" y="40" width="150" height="70" rx="14" style="fill:var(--panel-solid); stroke:var(--line);" stroke-width="1.5"/>
+              <text x="85" y="70" style="fill:var(--text)">Video</text>
+              <text x="85" y="90" style="fill:var(--muted); font-size:11px; font-weight:600;">match footage</text>
+
+              <line x1="160" y1="75" x2="200" y2="75" style="stroke:var(--accent);" stroke-width="2"/>
+              <polygon points="200,69 214,75 200,81" style="fill:var(--accent)"/>
+
+              <rect x="220" y="35" width="160" height="80" rx="14" style="fill:var(--panel-solid); stroke:var(--accent);" stroke-width="1.5"/>
+              <text x="300" y="68" style="fill:var(--text)">YOLOv8</text>
+              <text x="300" y="90" style="fill:var(--muted); font-size:11px; font-weight:600;">ball detection</text>
+
+              <line x1="380" y1="75" x2="420" y2="75" style="stroke:var(--accent);" stroke-width="2"/>
+              <polygon points="420,69 434,75 420,81" style="fill:var(--accent)"/>
+
+              <rect x="440" y="35" width="160" height="80" rx="14" style="fill:var(--panel-solid); stroke:var(--line);" stroke-width="1.5"/>
+              <text x="520" y="68" style="fill:var(--text)">Tracking</text>
+              <text x="520" y="90" style="fill:var(--muted); font-size:11px; font-weight:600;">trajectory (OpenCV)</text>
+
+              <line x1="600" y1="75" x2="640" y2="75" style="stroke:var(--accent);" stroke-width="2"/>
+              <polygon points="640,69 654,75 640,81" style="fill:var(--accent)"/>
+
+              <rect x="660" y="35" width="130" height="80" rx="14" style="fill:var(--panel-solid); stroke:var(--accent-2);" stroke-width="1.5"/>
+              <text x="725" y="68" style="fill:var(--text)">Impact</text>
+              <text x="725" y="90" style="fill:var(--muted); font-size:11px; font-weight:600;">classification</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">O que já foi feito</h2>
+        <h2 data-lang-block="en">Work done so far</h2>
+
+        <ol class="steps-list">
+          <li>
+            <span class="step-index">1</span>
+            <div>
+              <h3 data-lang-block="pt">Recolha e anotação de vídeo</h3>
+              <h3 data-lang-block="en">Footage collection &amp; annotation</h3>
+              <p data-lang-block="pt">Recolha de vídeo de jogo de padel e anotação da posição da bola para treino e avaliação do modelo.</p>
+              <p data-lang-block="en">Collected padel match footage and annotated ball positions for model training and evaluation.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">2</span>
+            <div>
+              <h3 data-lang-block="pt">Treino do modelo YOLOv8</h3>
+              <h3 data-lang-block="en">YOLOv8 model training</h3>
+              <p data-lang-block="pt">Treino/afinação de um modelo YOLOv8 para deteção da bola em condições reais de jogo.</p>
+              <p data-lang-block="en">Trained/fine-tuned a YOLOv8 model to detect the ball under real match conditions.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">3</span>
+            <div>
+              <h3 data-lang-block="pt">Tracking da trajetória</h3>
+              <h3 data-lang-block="en">Trajectory tracking</h3>
+              <p data-lang-block="pt">Reconstrução da trajetória da bola ao longo dos frames com OpenCV.</p>
+              <p data-lang-block="en">Reconstructed the ball's trajectory across frames using OpenCV.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">4</span>
+            <div>
+              <h3 data-lang-block="pt">Algoritmo de classificação de impacto</h3>
+              <h3 data-lang-block="en">Impact-classification algorithm</h3>
+              <p data-lang-block="pt">Desenvolvimento de um algoritmo que identifica o momento e o tipo de contacto da bola com a superfície a partir da trajetória.</p>
+              <p data-lang-block="en">Developed an algorithm that identifies the moment and type of ball-surface contact from the tracked trajectory.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">5</span>
+            <div>
+              <h3 data-lang-block="pt">Avaliação em clips de teste</h3>
+              <h3 data-lang-block="en">Evaluation on test clips</h3>
+              <p data-lang-block="pt">Avaliação da precisão de deteção e classificação em clips de vídeo separados do treino.</p>
+              <p data-lang-block="en">Evaluating detection and classification accuracy on video clips held out from training.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-index">6</span>
+            <div>
+              <h3 data-lang-block="pt">Próximo: aplicação Android em tempo real</h3>
+              <h3 data-lang-block="en">Next: real-time Android app</h3>
+              <p data-lang-block="pt">Portar o pipeline para Android, com foco em correr a inferência em tempo real durante o jogo.</p>
+              <p data-lang-block="en">Port the pipeline to Android, focused on running inference in real time during play.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="case-section">
+      <div class="container">
+        <h2 data-lang-block="pt">Estado atual e limitações</h2>
+        <h2 data-lang-block="en">Current status &amp; limitations</h2>
+
+        <div class="case-callout">
+          <p data-lang-block="pt"><strong>Estado:</strong> projeto em desenvolvimento ativo como parte da tese (Projeto II). A deteção da bola e a classificação de impacto estão a ser validadas em vídeo gravado; a inferência em tempo real no Android ainda não foi implementada. O repositório será publicado quando atingir um estado apresentável.</p>
+          <p data-lang-block="en"><strong>Status:</strong> actively in development as part of the thesis (Projeto II). Ball detection and impact classification are being validated on recorded footage; real-time inference on Android hasn't been implemented yet. The repository will be published once it reaches a presentable state.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Bruno Costa</span>
+      <span data-i18n="footer_built">Built for GitHub Pages · Static HTML/CSS/JS</span>
+    </div>
+  </footer>
+
+  <script src="../data.js"></script>
+  <script>
+    document.querySelector('#year').textContent = new Date().getFullYear();
+
+    document.querySelector('.nav-toggle').addEventListener('click', () => {
+      const navLinks = document.querySelector('#navLinks');
+      const isOpen = navLinks.classList.toggle('open');
+      document.querySelector('.nav-toggle').setAttribute('aria-expanded', String(isOpen));
+    });
+
+    const repoLink = document.querySelector('#repoLink');
+    if (SITE_LINKS.hawkeye.repo) {
+      repoLink.href = SITE_LINKS.hawkeye.repo;
+      repoLink.classList.remove('disabled');
+    }
+  </script>
+</body>
+</html>
