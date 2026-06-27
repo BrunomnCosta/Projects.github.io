@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIEM com ELK Stack — Bruno Costa</title>
+  <meta name="description" content="Case study: SIEM open-source com Elasticsearch, Logstash, Kibana, Filebeat e ElastAlert 2. Deteção de ameaças em tempo real com custo zero." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Tokens ──────────────────────────────────────────── */
+    :root {
+      --bg:        #0d0f14;
+      --bg2:       #13161e;
+      --bg3:       #1a1e29;
+      --border:    #252a38;
+      --muted:     #4a5068;
+      --subtle:    #6b7494;
+      --body:      #c8cde0;
+      --heading:   #eef0f8;
+      --accent:    #4f8ef7;
+      --accent2:   #a78bfa;
+      --green:     #34d399;
+      --amber:     #fbbf24;
+      --red:       #f87171;
+      --teal:      #22d3ee;
+
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+      --r:  6px;
+      --r2: 10px;
+      --transition: 0.18s ease;
+    }
+
+    [data-theme="light"] {
+      --bg:      #f4f6fc;
+      --bg2:     #ffffff;
+      --bg3:     #eaedf7;
+      --border:  #d4d8ec;
+      --muted:   #9399b2;
+      --subtle:  #6b7494;
+      --body:    #3a3f5c;
+      --heading: #0f1223;
+      --accent:  #2563eb;
+      --accent2: #7c3aed;
+      --green:   #059669;
+      --amber:   #d97706;
+      --red:     #dc2626;
+      --teal:    #0891b2;
+    }
+
+    /* ── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--body);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ─────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1rem, 5vw, 3rem);
+      height: 56px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .nav-left .sep { color: var(--border); }
+    .nav-left .page { color: var(--accent); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-pill {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--subtle);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      transition: color var(--transition), border-color var(--transition);
+      letter-spacing: 0.03em;
+    }
+    .btn-pill:hover { color: var(--heading); border-color: var(--muted); }
+    .btn-pill.active { color: var(--accent); border-color: var(--accent); }
+
+    /* ── Layout ──────────────────────────────────────────── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2.5rem);
+    }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    .hero {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 5vw, 2.6rem);
+      font-weight: 600;
+      color: var(--heading);
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--subtle);
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: var(--r);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--subtle);
+      letter-spacing: 0.02em;
+    }
+    .tag.blue  { color: var(--accent);  border-color: rgba(79,142,247,0.3);  background: rgba(79,142,247,0.08); }
+    .tag.green { color: var(--green);   border-color: rgba(52,211,153,0.3);  background: rgba(52,211,153,0.08); }
+    .tag.teal  { color: var(--teal);    border-color: rgba(34,211,238,0.3);  background: rgba(34,211,238,0.08); }
+    .tag.amber { color: var(--amber);   border-color: rgba(251,191,36,0.3);  background: rgba(251,191,36,0.08); }
+    .tag.purple{ color: var(--accent2); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.08);}
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .meta-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .meta-value {
+      font-size: 13px;
+      color: var(--body);
+    }
+    .meta-value a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .meta-value a:hover { text-decoration: underline; }
+
+    /* ── Sections ─────────────────────────────────────────── */
+    section {
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    section:last-child { border-bottom: none; }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    h2 .section-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 0.75rem;
+      margin-top: 1.75rem;
+    }
+    h3:first-child { margin-top: 0; }
+
+    p { margin-bottom: 1rem; color: var(--body); }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Architecture diagram ────────────────────────────── */
+    .arch-diagram {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 2rem;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--subtle);
+      overflow-x: auto;
+      line-height: 1.9;
+    }
+
+    .arch-diagram .layer-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .arch-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+    }
+
+    .arch-box {
+      padding: 6px 14px;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--body);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .arch-box.blue   { border-color: rgba(79,142,247,0.4);  background: rgba(79,142,247,0.1);  color: var(--accent); }
+    .arch-box.green  { border-color: rgba(52,211,153,0.4);  background: rgba(52,211,153,0.1);  color: var(--green); }
+    .arch-box.teal   { border-color: rgba(34,211,238,0.4);  background: rgba(34,211,238,0.1);  color: var(--teal); }
+    .arch-box.purple { border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.1); color: var(--accent2); }
+    .arch-box.amber  { border-color: rgba(251,191,36,0.4);  background: rgba(251,191,36,0.1);  color: var(--amber); }
+
+    .arch-arrow {
+      color: var(--muted);
+      padding: 0 8px;
+      font-size: 14px;
+    }
+
+    .arch-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border: 1px dashed var(--border);
+      border-radius: var(--r);
+      padding: 10px 14px;
+    }
+
+    /* ── Phase cards ──────────────────────────────────────── */
+    .phase-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .phase-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 0 1rem;
+      align-items: start;
+      transition: border-color var(--transition);
+    }
+    .phase-card:hover { border-color: var(--muted); }
+
+    .phase-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      padding-top: 2px;
+    }
+
+    .phase-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 0.5rem;
+    }
+
+    .phase-body {
+      font-size: 13.5px;
+      color: var(--subtle);
+      line-height: 1.65;
+    }
+
+    .phase-why {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg3);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 var(--r) var(--r) 0;
+      font-size: 12.5px;
+      color: var(--subtle);
+    }
+    .phase-why strong { color: var(--accent); font-weight: 500; }
+
+    /* ── Code blocks ─────────────────────────────────────── */
+    .code-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      overflow: hidden;
+      margin: 1.25rem 0;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+
+    .code-lang {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .code-filename {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--subtle);
+    }
+
+    pre {
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: var(--body);
+    }
+
+    pre .c  { color: var(--muted); font-style: italic; }   /* comment */
+    pre .k  { color: var(--accent2); }                     /* keyword */
+    pre .s  { color: var(--green); }                       /* string */
+    pre .n  { color: var(--teal); }                        /* name/key */
+    pre .v  { color: var(--amber); }                       /* value */
+    pre .p  { color: var(--accent); }                      /* punctuation/port */
+
+    /* ── Detection rules ─────────────────────────────────── */
+    .rule-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .rule-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 1.5rem;
+      transition: border-color var(--transition);
+    }
+    .rule-card:hover { border-color: var(--muted); }
+
+    .rule-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .rule-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--heading);
+    }
+
+    .rule-type {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 99px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .rule-type.frequency { background: rgba(79,142,247,0.12);  color: var(--accent);  border: 1px solid rgba(79,142,247,0.3);  }
+    .rule-type.any       { background: rgba(248,113,113,0.12); color: var(--red);     border: 1px solid rgba(248,113,113,0.3); }
+    .rule-type.spike     { background: rgba(251,191,36,0.12);  color: var(--amber);   border: 1px solid rgba(251,191,36,0.3);  }
+
+    .rule-logic {
+      font-size: 13px;
+      color: var(--subtle);
+      margin-bottom: 0.75rem;
+    }
+
+    .rule-mitre {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .rule-mitre span { color: var(--accent2); }
+
+    /* ── Production delta table ──────────────────────────── */
+    .delta-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .delta-table th {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .delta-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--subtle);
+      vertical-align: top;
+    }
+
+    .delta-table tr:last-child td { border-bottom: none; }
+
+    .delta-table td:first-child { color: var(--body); font-weight: 500; }
+
+    .sev {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 99px;
+    }
+    .sev.high   { background: rgba(248,113,113,0.12); color: var(--red);   border: 1px solid rgba(248,113,113,0.3); }
+    .sev.medium { background: rgba(251,191,36,0.12);  color: var(--amber); border: 1px solid rgba(251,191,36,0.3);  }
+    .sev.low    { background: rgba(52,211,153,0.12);  color: var(--green); border: 1px solid rgba(52,211,153,0.3);  }
+
+    /* ── Takeaways ────────────────────────────────────────── */
+    .takeaway-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .takeaway-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      font-size: 13.5px;
+      color: var(--subtle);
+      align-items: flex-start;
+    }
+
+    .takeaway-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Stack table ─────────────────────────────────────── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stack-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r2);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stack-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--heading);
+    }
+
+    .stack-ver {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .stack-role {
+      font-size: 12px;
+      color: var(--subtle);
+    }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── Language toggle ─────────────────────────────────── */
+    [lang-pt], [lang-en] { display: none; }
+    html[lang="pt"] [lang-pt] { display: revert; }
+    html[lang="en"] [lang-en] { display: revert; }
+
+    /* For block-level elements */
+    html[lang="pt"] .block-pt { display: block; }
+    html[lang="en"] .block-en { display: block; }
+    .block-pt, .block-en { display: none; }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .phase-card { grid-template-columns: 1fr; }
+      .phase-num  { display: none; }
+      .delta-table { font-size: 12px; }
+      .delta-table td, .delta-table th { padding: 8px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────── -->
+  <nav>
+    <a class="nav-left" href="index.html">
+      <span>Bruno Costa</span>
+      <span class="sep">/</span>
+      <span class="page">siem-elk</span>
+    </a>
+    <div class="nav-right">
+      <button class="btn-pill" id="lang-toggle" onclick="toggleLang()">EN</button>
+      <button class="btn-pill" id="theme-toggle" onclick="toggleTheme()">☀</button>
+    </div>
+  </nav>
+
+  <!-- ── Main ───────────────────────────────────────────── -->
+  <main class="container">
+
+    <!-- Hero -->
+    <header class="hero">
+      <div class="eyebrow">
+        <span lang-pt>Projeto de Segurança</span>
+        <span lang-en>Security Project</span>
+      </div>
+
+      <h1>
+        <span lang-pt>SIEM com ELK Stack</span>
+        <span lang-en>SIEM with ELK Stack</span>
+      </h1>
+
+      <p class="hero-desc">
+        <span lang-pt>Pipeline completo de deteção de ameaças usando Elasticsearch, Logstash, Kibana, Filebeat e ElastAlert 2. Custo operacional: zero.</span>
+        <span lang-en>Full threat-detection pipeline using Elasticsearch, Logstash, Kibana, Filebeat, and ElastAlert 2. Operational cost: zero.</span>
+      </p>
+
+      <div class="tag-row">
+        <span class="tag blue">Elasticsearch 8.13</span>
+        <span class="tag teal">Logstash</span>
+        <span class="tag teal">Kibana</span>
+        <span class="tag green">Filebeat</span>
+        <span class="tag amber">ElastAlert 2</span>
+        <span class="tag purple">Docker Compose</span>
+        <span class="tag">Python</span>
+        <span class="tag green">Open-source</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-item">
+          <span class="meta-label" lang-pt>Repositório</span>
+          <span class="meta-label" lang-en>Repository</span>
+          <span class="meta-value"><a href="https://github.com/BrunomnCosta/siem-elk" target="_blank">github.com/BrunomnCosta/siem-elk</a></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label" lang-pt>Período</span>
+          <span class="meta-label" lang-en>Period</span>
+          <span class="meta-value">2026</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label" lang-pt>Custo</span>
+          <span class="meta-label" lang-en>Cost</span>
+          <span class="meta-value" style="color: var(--green);">€0</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label" lang-pt>Contexto</span>
+          <span class="meta-label" lang-en>Context</span>
+          <span class="meta-value" lang-pt>Projeto individual de portfólio</span>
+          <span class="meta-value" lang-en>Individual portfolio project</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. Problem -->
+    <section>
+      <h2><span class="section-num">01</span>
+        <span lang-pt>O Problema</span>
+        <span lang-en>The Problem</span>
+      </h2>
+
+      <p lang-pt>A maioria dos projetos de portfólio em cibersegurança demonstra conhecimento teórico — certificações, CTFs, laboratórios de cursos. O que falta é evidência de capacidade de construir infraestrutura de monitorização operacional de raiz.</p>
+      <p lang-en>Most cybersecurity portfolio projects demonstrate theoretical knowledge — certifications, CTFs, course labs. What's missing is evidence of the ability to build operational monitoring infrastructure from scratch.</p>
+
+      <p lang-pt>Um SIEM (Security Information and Event Management) é o núcleo de qualquer operação de segurança. Saber configurar regras de deteção, construir pipelines de ingestão de logs e interpretar alertas é uma competência diretamente aplicável no mercado.</p>
+      <p lang-en>A SIEM (Security Information and Event Management) is the core of any security operation. Knowing how to configure detection rules, build log ingestion pipelines, and interpret alerts is a directly marketable skill.</p>
+
+      <p lang-pt>O objetivo deste projeto foi construir um SIEM completo e funcional com ferramentas gratuitas e open-source, documentando cada decisão técnica — incluindo o que ficaria diferente numa implantação em produção.</p>
+      <p lang-en>The goal of this project was to build a complete, functional SIEM with free and open-source tools, documenting each technical decision — including what would differ in a production deployment.</p>
+    </section>
+
+    <!-- 2. Architecture -->
+    <section>
+      <h2><span class="section-num">02</span>
+        <span lang-pt>Arquitetura</span>
+        <span lang-en>Architecture</span>
+      </h2>
+
+      <p lang-pt>O stack ELK (Elasticsearch, Logstash, Kibana) é a base. Filebeat trata do transporte dos logs; ElastAlert 2 implementa as regras de deteção. Cada componente tem uma responsabilidade única e substituível.</p>
+      <p lang-en>The ELK stack (Elasticsearch, Logstash, Kibana) forms the foundation. Filebeat handles log transport; ElastAlert 2 implements detection rules. Each component has a single, replaceable responsibility.</p>
+
+      <!-- Architecture diagram -->
+      <div class="arch-diagram" style="margin-top: 1.5rem;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0; row-gap: 12px;">
+
+          <!-- Sources -->
+          <div class="arch-group" style="gap:6px;">
+            <div style="font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px;" lang-pt>Fontes</div>
+            <div style="font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px;" lang-en>Sources</div>
+            <div class="arch-box" style="font-size:11px;">SSH auth.log</div>
+            <div class="arch-box" style="font-size:11px;">Web access.log</div>
+          </div>
+
+          <div class="arch-arrow">→</div>
+
+          <!-- Filebeat -->
+          <div class="arch-box green" style="padding: 14px 16px; text-align:center;">
+            <div style="font-weight:600;">Filebeat</div>
+            <div style="font-size:10px; opacity:0.7; margin-top:2px;" lang-pt>transporte</div>
+            <div style="font-size:10px; opacity:0.7; margin-top:2px;" lang-en>transport</div>
+          </div>
+
+          <div class="arch-arrow">→</div>
+
+          <!-- Logstash -->
+          <div class="arch-box teal" style="padding: 14px 16px; text-align:center;">
+            <div style="font-weight:600;">Logstash</div>
+            <div style="font-size:10px; opacity:0.7; margin-top:2px;" lang-pt>parse + enrich</div>
+            <div style="font-size:10px; opacity:0.7; margin-top:2px;" lang-en>parse + enrich</div>
+          </div>
+
+          <div class="arch-arrow">→</div>
+
+          <!-- Elasticsearch -->
+          <div class="arch-box blue" style="padding: 14px 16px; text-align:center;">
+            <div style="font-weight:600;">Elasticsearch</div>
+            <div style="font-size:10px; opacity:0.7; margin-top:2px;" lang-pt>índice + armazenamento</div>
+            <div style="font-size:10px; opacity:0.7; margin-top:2px;" lang-en>index + store</div>
+          </div>
+
+          <div class="arch-arrow">→</div>
+
+          <!-- Output -->
+          <div class="arch-group" style="gap:6px;">
+            <div class="arch-box purple" style="font-size:11px;">Kibana</div>
+            <div class="arch-box amber" style="font-size:11px;">ElastAlert 2</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.25rem; font-size: 11px; color: var(--muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+          <span lang-pt>· Todos os componentes correm em Docker Compose</span>
+          <span lang-en>· All components run in Docker Compose</span>
+          <span lang-pt>· Um único VM com 4GB RAM é suficiente</span>
+          <span lang-en>· A single VM with 4GB RAM is sufficient</span>
+          <span lang-pt>· Índices diários: siem-YYYY.MM.DD</span>
+          <span lang-en>· Daily indices: siem-YYYY.MM.DD</span>
+        </div>
+      </div>
+
+      <h3 lang-pt>Decisões de design</h3>
+      <h3 lang-en>Design decisions</h3>
+
+      <p lang-pt><strong style="color:var(--heading);">Porquê ELK e não Splunk ou Wazuh?</strong> O Splunk Free tem um limite de 500MB/dia, o que inviabiliza demos reais. O Wazuh é uma plataforma completa — útil em produção, mas aprende-se menos sobre os componentes individuais. O ELK força a compreensão de cada camada.</p>
+      <p lang-en><strong style="color:var(--heading);">Why ELK and not Splunk or Wazuh?</strong> Splunk Free has a 500MB/day cap, which kills real demos. Wazuh is a complete platform — useful in production, but you learn less about individual components. ELK forces understanding of each layer.</p>
+
+      <p lang-pt><strong style="color:var(--heading);">Porquê Filebeat → Logstash e não Filebeat → Elasticsearch diretamente?</strong> Separar transporte de parsing permite atualizar as regras Grok sem tocar no agente de coleta. Em produção, os agentes distribuídos por múltiplos servidores não devem ser atualizados a cada mudança de pipeline.</p>
+      <p lang-en><strong style="color:var(--heading);">Why Filebeat → Logstash and not Filebeat → Elasticsearch directly?</strong> Separating transport from parsing allows updating Grok rules without touching the collection agent. In production, agents distributed across many servers should not be updated on every pipeline change.</p>
+
+      <p lang-pt><strong style="color:var(--heading);">Porquê índices diários?</strong> Facilita a gestão de ciclo de vida dos dados — eliminar um dia de dados é apenas apagar um índice. É também como os SIEMs reais funcionam em produção.</p>
+      <p lang-en><strong style="color:var(--heading);">Why daily indices?</strong> Simplifies data lifecycle management — deleting a day's data is just dropping one index. It's also how real SIEMs work in production.</p>
+    </section>
+
+    <!-- 3. Pipeline -->
+    <section>
+      <h2><span class="section-num">03</span>
+        <span lang-pt>Pipeline de Ingestão</span>
+        <span lang-en>Ingestion Pipeline</span>
+      </h2>
+
+      <p lang-pt>O coração do projeto é o pipeline Logstash. Os eventos chegam como strings brutas e saem como documentos estruturados com campos normalizados segundo o Elastic Common Schema (ECS).</p>
+      <p lang-en>The heart of the project is the Logstash pipeline. Events arrive as raw strings and leave as structured documents with fields normalized to the Elastic Common Schema (ECS).</p>
+
+      <h3 lang-pt>Padrões Grok — SSH</h3>
+      <h3 lang-en>Grok patterns — SSH</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">Logstash DSL</span>
+          <span class="code-filename">logstash/pipeline/siem.conf</span>
+        </div>
+        <pre><span class="c"># Extrai campos de linhas como:</span>
+<span class="c"># Jun 15 14:23:01 sshd[1234]: Failed password for root from 185.234.219.10 port 22 ssh2</span>
+
+<span class="k">grok</span> {
+  <span class="k">match</span> =&gt; {
+    <span class="s">"message"</span> =&gt; <span class="s">"%{SYSLOGTIMESTAMP:event.timestamp} %{HOSTNAME:host.name} sshd\[%{NUMBER:process.pid}\]: Failed password for %{USERNAME:user.name} from %{IP:source.ip} port %{NUMBER:source.port}"</span>
+  }
+}
+
+<span class="c"># GeoIP: acrescenta país, cidade e coordenadas ao source.ip</span>
+<span class="k">geoip</span> { <span class="k">source</span> =&gt; <span class="s">"source.ip"</span>; <span class="k">target</span> =&gt; <span class="s">"source.geo"</span> }</pre>
+      </div>
+
+      <p lang-pt>O Grok é um sistema de expressões regulares com nomes semânticos. <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal);">%{IP:source.ip}</code> corresponde a qualquer endereço IP válido e guarda-o no campo <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal);">source.ip</code>. É esta capacidade de nomear campos que transforma texto livre em dados pesquisáveis.</p>
+      <p lang-en>Grok is a regex system with semantic names. <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal);">%{IP:source.ip}</code> matches any valid IP address and saves it to the <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal);">source.ip</code> field. This field-naming capability is what turns free text into searchable data.</p>
+
+      <h3 lang-pt>Enriquecimento GeoIP</h3>
+      <h3 lang-en>GeoIP enrichment</h3>
+
+      <p lang-pt>Cada evento com um <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal);">source.ip</code> é enriquecido com coordenadas geográficas. A base de dados GeoIP vem incluída na imagem Docker do Logstash — sem custo adicional. O resultado é o mapa de origens de ataques no dashboard Kibana.</p>
+      <p lang-en>Each event with a <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal);">source.ip</code> is enriched with geographic coordinates. The GeoIP database ships inside the Logstash Docker image — no extra cost. The result is the attack-origin map in the Kibana dashboard.</p>
+    </section>
+
+    <!-- 4. Detection -->
+    <section>
+      <h2><span class="section-num">04</span>
+        <span lang-pt>Regras de Deteção</span>
+        <span lang-en>Detection Rules</span>
+      </h2>
+
+      <p lang-pt>O ElastAlert 2 executa queries ao Elasticsearch em intervalos configuráveis e dispara alertas quando as condições das regras são satisfeitas. Foram implementadas três regras que cobrem os três tipos de lógica de deteção mais comuns.</p>
+      <p lang-en>ElastAlert 2 runs queries against Elasticsearch at configurable intervals and fires alerts when rule conditions are met. Three rules were implemented, covering the three most common detection logic types.</p>
+
+      <div class="rule-grid" style="margin-top: 1.5rem;">
+
+        <div class="rule-card">
+          <div class="rule-header">
+            <span class="rule-name" lang-pt>Brute Force SSH</span>
+            <span class="rule-name" lang-en>SSH Brute Force</span>
+            <span class="rule-type frequency">frequency</span>
+          </div>
+          <p class="rule-logic" lang-pt>Dispara quando 10 ou mais tentativas de login falhadas ocorrem do mesmo IP de origem num intervalo de 1 minuto. O threshold de 10 distingue erros humanos (1–3 tentativas) de ferramentas automatizadas como Hydra ou Medusa.</p>
+          <p class="rule-logic" lang-en>Fires when 10 or more failed login attempts occur from the same source IP within a 1-minute window. The threshold of 10 distinguishes human mistakes (1–3 attempts) from automated tools like Hydra or Medusa.</p>
+          <div class="rule-mitre">MITRE ATT&CK: <span>T1110.001</span> — Brute Force: Password Guessing</div>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-header">
+            <span class="rule-name" lang-pt>Sondagem de Diretórios Web</span>
+            <span class="rule-name" lang-en>Web Directory Probe</span>
+            <span class="rule-type any">any</span>
+          </div>
+          <p class="rule-logic" lang-pt>Dispara em qualquer pedido HTTP a caminhos sensíveis: <code style="font-family:var(--font-mono);font-size:11px;">/admin, /wp-admin, /.env, /.git</code>. Qualquer acesso a estes caminhos num servidor limpo é reconhecimento automático ou um ataque direcionado — não existe falso positivo legítimo.</p>
+          <p class="rule-logic" lang-en>Fires on any HTTP request to sensitive paths: <code style="font-family:var(--font-mono);font-size:11px;">/admin, /wp-admin, /.env, /.git</code>. Any access to these paths on a clean server is automated recon or a targeted attack — there is no legitimate false positive.</p>
+          <div class="rule-mitre">MITRE ATT&CK: <span>T1595.003</span> — Active Scanning: Wordlist Scanning</div>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-header">
+            <span class="rule-name" lang-pt>Spike de Erros 404</span>
+            <span class="rule-name" lang-en>HTTP 404 Spike</span>
+            <span class="rule-type spike">spike</span>
+          </div>
+          <p class="rule-logic" lang-pt>Dispara quando a taxa de respostas 404 de um IP aumenta 5x em relação à baseline dos últimos 10 minutos. Uma regra de spike adapta-se ao volume de tráfego real — é mais inteligente do que um threshold absoluto que ignora o contexto.</p>
+          <p class="rule-logic" lang-en>Fires when the 404 response rate from an IP spikes 5x above the 10-minute baseline. A spike rule adapts to real traffic volume — smarter than a flat threshold that ignores context.</p>
+          <div class="rule-mitre">MITRE ATT&CK: <span>T1595.003</span> — Active Scanning: Wordlist Scanning</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Phases -->
+    <section>
+      <h2><span class="section-num">05</span>
+        <span lang-pt>Fases de Implementação</span>
+        <span lang-en>Implementation Phases</span>
+      </h2>
+
+      <div class="phase-grid">
+
+        <div class="phase-card">
+          <span class="phase-num">01</span>
+          <div>
+            <div class="phase-title" lang-pt>Ambiente Docker</div>
+            <div class="phase-title" lang-en>Docker Environment</div>
+            <div class="phase-body" lang-pt>Stack completo definido em <code style="font-family:var(--font-mono);font-size:12px;">docker-compose.yml</code> com healthchecks, volumes persistentes para os dados Elasticsearch, e limites de memória JVM adaptados para WSL2.</div>
+            <div class="phase-body" lang-en>Full stack defined in <code style="font-family:var(--font-mono);font-size:12px;">docker-compose.yml</code> with healthchecks, persistent volumes for Elasticsearch data, and JVM memory limits tuned for WSL2.</div>
+            <div class="phase-why" lang-pt><strong>Porquê Docker?</strong> Reproduzível em qualquer máquina. <code style="font-family:var(--font-mono);font-size:11px;">docker compose up</code> é suficiente para um recrutador executar o projeto localmente.</div>
+            <div class="phase-why" lang-en><strong>Why Docker?</strong> Reproducible on any machine. <code style="font-family:var(--font-mono);font-size:11px;">docker compose up</code> is enough for a recruiter to run the project locally.</div>
+          </div>
+        </div>
+
+        <div class="phase-card">
+          <span class="phase-num">02</span>
+          <div>
+            <div class="phase-title" lang-pt>Pipeline de Ingestão</div>
+            <div class="phase-title" lang-en>Ingestion Pipeline</div>
+            <div class="phase-body" lang-pt>Configuração do Filebeat para vigiar ficheiros de log, pipeline Logstash com padrões Grok para SSH e web, enriquecimento GeoIP, normalização ECS, e indexação diária no Elasticsearch.</div>
+            <div class="phase-body" lang-en>Filebeat configured to watch log files, Logstash pipeline with Grok patterns for SSH and web logs, GeoIP enrichment, ECS normalization, and daily indexing into Elasticsearch.</div>
+            <div class="phase-why" lang-pt><strong>Porquê Grok?</strong> É a competência que os entrevistadores testam. Escrever padrões Grok para formatos reais (Cisco ASA, Windows Event Log, Nginx) é um diferenciador genuíno no mercado.</div>
+            <div class="phase-why" lang-en><strong>Why Grok?</strong> It's the skill interviewers test. Writing Grok patterns for real log formats (Cisco ASA, Windows Event Log, Nginx) is a genuine market differentiator.</div>
+          </div>
+        </div>
+
+        <div class="phase-card">
+          <span class="phase-num">03</span>
+          <div>
+            <div class="phase-title" lang-pt>Geradores de Logs Sintéticos</div>
+            <div class="phase-title" lang-en>Synthetic Log Generators</div>
+            <div class="phase-body" lang-pt>Dois scripts Python que geram tráfego realista: SSH com três cenários (atividade normal, brute force, credential stuffing) e web com tráfego normal, enumeração de paths e sondagem de admin. O Filebeat deteta os ficheiros automaticamente.</div>
+            <div class="phase-body" lang-en>Two Python scripts generating realistic traffic: SSH with three scenarios (normal activity, brute force, credential stuffing) and web with normal traffic, path enumeration, and admin probing. Filebeat detects the files automatically.</div>
+            <div class="phase-why" lang-pt><strong>Porquê simulação?</strong> Sem um ambiente real comprometível, logs sintéticos são a única forma de testar regras de deteção com dados controláveis e reproduzíveis.</div>
+            <div class="phase-why" lang-en><strong>Why simulation?</strong> Without a real compromisable environment, synthetic logs are the only way to test detection rules with controllable, reproducible data.</div>
+          </div>
+        </div>
+
+        <div class="phase-card">
+          <span class="phase-num">04</span>
+          <div>
+            <div class="phase-title" lang-pt>Dashboards Kibana</div>
+            <div class="phase-title" lang-en>Kibana Dashboards</div>
+            <div class="phase-body" lang-pt>Três dashboards: visão geral (taxa de eventos, top IPs, mapa geográfico), painel SSH (logins falhados por utilizador, incidentes de brute force) e painel Web (spike 404, histórico de sondagens).</div>
+            <div class="phase-body" lang-en>Three dashboards: overview (event rate, top IPs, geographic map), SSH panel (failed logins by user, brute force incidents), and web panel (404 spike, probe history).</div>
+            <div class="phase-why" lang-pt><strong>Porquê documentar dashboards?</strong> Screenshots de dashboards funcionais em portfólio são mais credíveis do que qualquer certificação. Demonstram que se consegue responder a uma pergunta de negócio com dados.</div>
+            <div class="phase-why" lang-en><strong>Why document dashboards?</strong> Screenshots of working dashboards in a portfolio are more credible than any certification. They demonstrate the ability to answer a business question with data.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. Production delta -->
+    <section>
+      <h2><span class="section-num">06</span>
+        <span lang-pt>Delta de Produção</span>
+        <span lang-en>Production Delta</span>
+      </h2>
+
+      <p lang-pt>Este laboratório omite deliberadamente algumas configurações que seriam obrigatórias em produção. Documentar estas lacunas demonstra maturidade de engenharia — é mais honesto e informativo do que simular uma implantação completa.</p>
+      <p lang-en>This lab deliberately omits configurations that would be mandatory in production. Documenting these gaps demonstrates engineering maturity — it's more honest and informative than simulating a complete deployment.</p>
+
+      <div style="margin-top: 1.5rem; overflow-x: auto;">
+        <table class="delta-table">
+          <thead>
+            <tr>
+              <th lang-pt>Lacuna</th>
+              <th lang-en>Gap</th>
+              <th lang-pt>Severidade</th>
+              <th lang-en>Severity</th>
+              <th lang-pt>Correção em produção</th>
+              <th lang-en>Production fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-pt>xpack.security desativado</td>
+              <td lang-en>xpack.security disabled</td>
+              <td><span class="sev high">Alto</span></td>
+              <td lang-pt>Ativar TLS + autenticação por papel (analyst / admin / logstash_writer)</td>
+              <td lang-en>Enable TLS + role-based auth (analyst / admin / logstash_writer)</td>
+            </tr>
+            <tr>
+              <td lang-pt>Sem ILM (Index Lifecycle)</td>
+              <td lang-en>No ILM (Index Lifecycle)</td>
+              <td><span class="sev medium">Médio</span></td>
+              <td lang-pt>Política Hot→Warm→Delete; 90 dias de retenção standard</td>
+              <td lang-en>Hot→Warm→Delete policy; 90-day standard retention</td>
+            </tr>
+            <tr>
+              <td lang-pt>Alertas em modo debug</td>
+              <td lang-en>Debug-mode alerting</td>
+              <td><span class="sev medium">Médio</span></td>
+              <td lang-pt>Substituir por Slack webhook ou email SMTP</td>
+              <td lang-en>Replace with Slack webhook or SMTP email</td>
+            </tr>
+            <tr>
+              <td lang-pt>Sem threat intelligence</td>
+              <td lang-en>No threat intelligence</td>
+              <td><span class="sev low">Baixo</span></td>
+              <td lang-pt>Integrar AbuseIPDB API (tier gratuito) — campo threat.score por IP</td>
+              <td lang-en>Integrate AbuseIPDB API (free tier) — threat.score field per IP</td>
+            </tr>
+            <tr>
+              <td lang-pt>Nó Elasticsearch único</td>
+              <td lang-en>Single Elasticsearch node</td>
+              <td><span class="sev high">Alto</span></td>
+              <td lang-pt>Cluster mínimo de 3 nós ou Elastic Cloud</td>
+              <td lang-en>Minimum 3-node cluster or Elastic Cloud</td>
+            </tr>
+            <tr>
+              <td lang-pt>Sem logs Windows</td>
+              <td lang-en>No Windows logs</td>
+              <td><span class="sev medium">Médio</span></td>
+              <td lang-pt>Winlogbeat: Event IDs 4624, 4625, 4688, 4698, 7045</td>
+              <td lang-en>Winlogbeat: Event IDs 4624, 4625, 4688, 4698, 7045</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. Takeaways -->
+    <section>
+      <h2><span class="section-num">07</span>
+        <span lang-pt>Conclusões</span>
+        <span lang-en>Takeaways</span>
+      </h2>
+
+      <div class="takeaway-list">
+
+        <div class="takeaway-item">
+          <span class="takeaway-icon">→</span>
+          <span lang-pt>A separação de responsabilidades entre Filebeat (transporte), Logstash (parsing) e Elasticsearch (armazenamento) não é apenas design elegante — é o que permite escalar e manter cada camada de forma independente em produção.</span>
+          <span lang-en>The separation of concerns between Filebeat (transport), Logstash (parsing), and Elasticsearch (storage) is not just elegant design — it's what allows each layer to be scaled and maintained independently in production.</span>
+        </div>
+
+        <div class="takeaway-item">
+          <span class="takeaway-icon">→</span>
+          <span lang-pt>Os padrões Grok são o ponto mais frágil do pipeline. Uma linha de log com formato diferente do esperado gera um evento <code style="font-family:var(--font-mono);font-size:12px;">[_grokparsefailure]</code> que não é descartado — é armazenado mas não pesquisável como esperado. Em produção, monitorizar a taxa de falhas de parse é tão importante como monitorizar os alertas.</span>
+          <span lang-en>Grok patterns are the most fragile point of the pipeline. A log line with an unexpected format generates a <code style="font-family:var(--font-mono);font-size:12px;">[_grokparsefailure]</code> event that is not discarded — it's stored but not searchable as expected. In production, monitoring the parse failure rate is as important as monitoring alerts.</span>
+        </div>
+
+        <div class="takeaway-item">
+          <span class="takeaway-icon">→</span>
+          <span lang-pt>A regra de tipo <em>spike</em> do ElastAlert é significativamente mais robusta do que uma regra de <em>frequency</em> para deteção de scanners. Um threshold absoluto ignora o contexto de tráfego; um múltiplo da baseline adapta-se automaticamente a variações de volume.</span>
+          <span lang-en>ElastAlert's <em>spike</em> rule type is significantly more robust than a <em>frequency</em> rule for scanner detection. An absolute threshold ignores traffic context; a baseline multiple adapts automatically to volume variations.</span>
+        </div>
+
+        <div class="takeaway-item">
+          <span class="takeaway-icon">→</span>
+          <span lang-pt>O maior constrangimento técnico no WSL2 é o limite de <code style="font-family:var(--font-mono);font-size:12px;">vm.max_map_count</code>. O Elasticsearch falha silenciosamente sem ele. Este tipo de problema específico de ambiente não está na documentação oficial — só se encontra em produção.</span>
+          <span lang-en>The biggest technical constraint on WSL2 is the <code style="font-family:var(--font-mono);font-size:12px;">vm.max_map_count</code> limit. Elasticsearch silently fails without it. This type of environment-specific problem is not in official documentation — it's only found in production.</span>
+        </div>
+
+        <div class="takeaway-item">
+          <span class="takeaway-icon">→</span>
+          <span lang-pt>Numa iteração futura, integraria Winlogbeat para logs Windows e a API do AbuseIPDB para threat intelligence automática — os dois acréscimos com maior impacto na detecção real com custo ainda nulo.</span>
+          <span lang-en>In a future iteration, I would integrate Winlogbeat for Windows logs and the AbuseIPDB API for automatic threat intelligence — the two additions with the highest detection impact at still-zero cost.</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 8. Stack -->
+    <section>
+      <h2><span class="section-num">08</span>
+        <span lang-pt>Stack Tecnológico</span>
+        <span lang-en>Technology Stack</span>
+      </h2>
+
+      <div class="stack-grid">
+        <div class="stack-item">
+          <span class="stack-name">Elasticsearch</span>
+          <span class="stack-ver">8.13.0</span>
+          <span class="stack-role" lang-pt>Armazenamento e indexação de eventos</span>
+          <span class="stack-role" lang-en>Event storage and indexing</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">Logstash</span>
+          <span class="stack-ver">8.13.0</span>
+          <span class="stack-role" lang-pt>Parsing Grok + enriquecimento GeoIP</span>
+          <span class="stack-role" lang-en>Grok parsing + GeoIP enrichment</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">Kibana</span>
+          <span class="stack-ver">8.13.0</span>
+          <span class="stack-role" lang-pt>Dashboards e pesquisa</span>
+          <span class="stack-role" lang-en>Dashboards and search</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">Filebeat</span>
+          <span class="stack-ver">8.13.0</span>
+          <span class="stack-role" lang-pt>Transporte de logs (shipper)</span>
+          <span class="stack-role" lang-en>Log transport (shipper)</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">ElastAlert 2</span>
+          <span class="stack-ver">2.19.0</span>
+          <span class="stack-role" lang-pt>Motor de regras de deteção</span>
+          <span class="stack-role" lang-en>Detection rules engine</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">Docker Compose</span>
+          <span class="stack-ver">—</span>
+          <span class="stack-role" lang-pt>Orquestração de contentores</span>
+          <span class="stack-role" lang-en>Container orchestration</span>
+        </div>
+        <div class="stack-item">
+          <span class="stack-name">Python 3</span>
+          <span class="stack-ver">3.8+</span>
+          <span class="stack-role" lang-pt>Geradores de logs e automação</span>
+          <span class="stack-role" lang-en>Log generators and automation</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="container">
+    <div class="footer-links">
+      <a href="index.html" lang-pt>← Todos os projetos</a>
+      <a href="index.html" lang-en>← All projects</a>
+      <a href="https://github.com/BrunomnCosta/siem-elk" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/brunomncosta" target="_blank">LinkedIn</a>
+    </div>
+    <span class="footer-copy">Bruno Costa © 2026</span>
+  </footer>
+
+  <script>
+    // ── Language toggle ───────────────────────────────────
+    function toggleLang() {
+      const html = document.documentElement;
+      const btn  = document.getElementById('lang-toggle');
+      if (html.lang === 'pt') {
+        html.lang = 'en';
+        btn.textContent = 'PT';
+        btn.classList.add('active');
+      } else {
+        html.lang = 'pt';
+        btn.textContent = 'EN';
+        btn.classList.remove('active');
+      }
+    }
+
+    // ── Theme toggle ──────────────────────────────────────
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn  = document.getElementById('theme-toggle');
+      if (html.dataset.theme === 'dark') {
+        html.dataset.theme = 'light';
+        btn.textContent = '☾';
+      } else {
+        html.dataset.theme = 'dark';
+        btn.textContent = '☀';
+      }
+    }
+
+    // Persist preferences
+    const savedLang  = localStorage.getItem('lang');
+    const savedTheme = localStorage.getItem('theme');
+    if (savedLang)  { document.documentElement.lang = savedLang; document.getElementById('lang-toggle').textContent = savedLang === 'en' ? 'PT' : 'EN'; }
+    if (savedTheme) { document.documentElement.dataset.theme = savedTheme; document.getElementById('theme-toggle').textContent = savedTheme === 'light' ? '☾' : '☀'; }
+  </script>
+</body>
+</html>
