@@ -42,6 +42,22 @@ const projects = [
     links: { repo: SITE_LINKS.securitest.repo, demo: SITE_LINKS.securitest.demo }
   },
   {
+    id: "siem-elk",
+    category: ["security", "cloud"],
+    statusKey: "live",
+    title: {
+      pt: "SIEM com ELK Stack",
+      en: "SIEM with ELK Stack"
+    },
+    summary: {
+      pt: "Pipeline completo de deteção de ameaças com Elasticsearch, Logstash, Kibana, Filebeat e ElastAlert 2. Regras de deteção mapeadas ao MITRE ATT&CK, parsing Grok, enriquecimento GeoIP e alertas automáticos de brute force SSH. Custo operacional: zero.",
+      en: "Full threat-detection pipeline using Elasticsearch, Logstash, Kibana, Filebeat, and ElastAlert 2. Detection rules mapped to MITRE ATT&CK, Grok parsing, GeoIP enrichment, and automated SSH brute-force alerts. Operational cost: zero."
+    },
+    stack: ["Elasticsearch", "Logstash", "Kibana", "Filebeat", "ElastAlert 2", "Docker", "Python"],
+    detailPage: "projects/siem-elk-casestudy.html",
+    links: { repo: "https://github.com/BrunomnCosta/siem-elk", demo: "" }
+  },
+  {
     id: "hawk-eye-padel",
     category: ["research", "backend"],
     statusKey: "progress",
