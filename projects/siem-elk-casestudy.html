@@ -683,14 +683,11 @@
         <span lang-en>The Problem</span>
       </h2>
 
-      <p lang-pt>A maioria dos projetos de portfólio em cibersegurança demonstra conhecimento teórico — certificações, CTFs, laboratórios de cursos. O que falta é evidência de capacidade de construir infraestrutura de monitorização operacional de raiz.</p>
-      <p lang-en>Most cybersecurity portfolio projects demonstrate theoretical knowledge — certifications, CTFs, course labs. What's missing is evidence of the ability to build operational monitoring infrastructure from scratch.</p>
+      <p lang-pt>Um SIEM (Security Information and Event Management) centraliza logs de múltiplas fontes, aplica regras de deteção e gera alertas quando padrões de ataque são identificados. Este projeto implementa esse pipeline de raiz: ingestão, parsing, armazenamento, visualização e deteção automatizada.</p>
+      <p lang-en>A SIEM (Security Information and Event Management) centralises logs from multiple sources, applies detection rules, and generates alerts when attack patterns are identified. This project implements that pipeline from scratch: ingestion, parsing, storage, visualisation, and automated detection.</p>
 
-      <p lang-pt>Um SIEM (Security Information and Event Management) é o núcleo de qualquer operação de segurança. Saber configurar regras de deteção, construir pipelines de ingestão de logs e interpretar alertas é uma competência diretamente aplicável no mercado.</p>
-      <p lang-en>A SIEM (Security Information and Event Management) is the core of any security operation. Knowing how to configure detection rules, build log ingestion pipelines, and interpret alerts is a directly marketable skill.</p>
-
-      <p lang-pt>O objetivo deste projeto foi construir um SIEM completo e funcional com ferramentas gratuitas e open-source, documentando cada decisão técnica — incluindo o que ficaria diferente numa implantação em produção.</p>
-      <p lang-en>The goal of this project was to build a complete, functional SIEM with free and open-source tools, documenting each technical decision — including what would differ in a production deployment.</p>
+      <p lang-pt>O stack escolhido — Elasticsearch, Logstash, Kibana, Filebeat e ElastAlert 2 — cobre cada camada do pipeline de forma independente. Cada componente tem uma responsabilidade única: Filebeat transporta, Logstash parseia, Elasticsearch armazena e indexa, Kibana visualiza, ElastAlert deteta. A separação permite substituir ou escalar qualquer camada individualmente.</p>
+      <p lang-en>The chosen stack — Elasticsearch, Logstash, Kibana, Filebeat, and ElastAlert 2 — covers each pipeline layer independently. Each component has a single responsibility: Filebeat transports, Logstash parses, Elasticsearch stores and indexes, Kibana visualises, ElastAlert detects. The separation allows replacing or scaling any layer individually.</p>
     </section>
 
     <!-- 2. Architecture -->
@@ -879,8 +876,8 @@
             <div class="phase-title" lang-en>Docker Environment</div>
             <div class="phase-body" lang-pt>Stack completo definido em <code style="font-family:var(--font-mono);font-size:12px;">docker-compose.yml</code> com healthchecks, volumes persistentes para os dados Elasticsearch, e limites de memória JVM adaptados para WSL2.</div>
             <div class="phase-body" lang-en>Full stack defined in <code style="font-family:var(--font-mono);font-size:12px;">docker-compose.yml</code> with healthchecks, persistent volumes for Elasticsearch data, and JVM memory limits tuned for WSL2.</div>
-            <div class="phase-why" lang-pt><strong>Porquê Docker?</strong> Reproduzível em qualquer máquina. <code style="font-family:var(--font-mono);font-size:11px;">docker compose up</code> é suficiente para um recrutador executar o projeto localmente.</div>
-            <div class="phase-why" lang-en><strong>Why Docker?</strong> Reproducible on any machine. <code style="font-family:var(--font-mono);font-size:11px;">docker compose up</code> is enough for a recruiter to run the project locally.</div>
+            <div class="phase-why" lang-pt><strong>Porquê Docker?</strong> O stack tem cinco processos com dependências entre si e requisitos de memória específicos. Docker Compose garante que as versões, variáveis de ambiente e ordem de arranque são sempre as mesmas — independentemente do sistema operativo do host.</div>
+            <div class="phase-why" lang-en><strong>Why Docker?</strong> The stack has five processes with interdependencies and specific memory requirements. Docker Compose ensures versions, environment variables, and startup order are always consistent — regardless of the host OS.</div>
           </div>
         </div>
 
@@ -891,8 +888,8 @@
             <div class="phase-title" lang-en>Ingestion Pipeline</div>
             <div class="phase-body" lang-pt>Configuração do Filebeat para vigiar ficheiros de log, pipeline Logstash com padrões Grok para SSH e web, enriquecimento GeoIP, normalização ECS, e indexação diária no Elasticsearch.</div>
             <div class="phase-body" lang-en>Filebeat configured to watch log files, Logstash pipeline with Grok patterns for SSH and web logs, GeoIP enrichment, ECS normalization, and daily indexing into Elasticsearch.</div>
-            <div class="phase-why" lang-pt><strong>Porquê Grok?</strong> É a competência que os entrevistadores testam. Escrever padrões Grok para formatos reais (Cisco ASA, Windows Event Log, Nginx) é um diferenciador genuíno no mercado.</div>
-            <div class="phase-why" lang-en><strong>Why Grok?</strong> It's the skill interviewers test. Writing Grok patterns for real log formats (Cisco ASA, Windows Event Log, Nginx) is a genuine market differentiator.</div>
+            <div class="phase-why" lang-pt><strong>Porquê Grok?</strong> Os logs chegam como strings não estruturadas. O Grok extrai campos com nome — <code style="font-family:var(--font-mono);font-size:11px;">source.ip</code>, <code style="font-family:var(--font-mono);font-size:11px;">user.name</code>, <code style="font-family:var(--font-mono);font-size:11px;">event.action</code> — que o Elasticsearch indexa e que o ElastAlert pode consultar. Sem parsing, não há deteção possível.</div>
+            <div class="phase-why" lang-en><strong>Why Grok?</strong> Logs arrive as unstructured strings. Grok extracts named fields — <code style="font-family:var(--font-mono);font-size:11px;">source.ip</code>, <code style="font-family:var(--font-mono);font-size:11px;">user.name</code>, <code style="font-family:var(--font-mono);font-size:11px;">event.action</code> — that Elasticsearch indexes and ElastAlert can query. Without parsing, detection is not possible.</div>
           </div>
         </div>
 
@@ -903,8 +900,8 @@
             <div class="phase-title" lang-en>Synthetic Log Generators</div>
             <div class="phase-body" lang-pt>Dois scripts Python que geram tráfego realista: SSH com três cenários (atividade normal, brute force, credential stuffing) e web com tráfego normal, enumeração de paths e sondagem de admin. O Filebeat deteta os ficheiros automaticamente.</div>
             <div class="phase-body" lang-en>Two Python scripts generating realistic traffic: SSH with three scenarios (normal activity, brute force, credential stuffing) and web with normal traffic, path enumeration, and admin probing. Filebeat detects the files automatically.</div>
-            <div class="phase-why" lang-pt><strong>Porquê simulação?</strong> Sem um ambiente real comprometível, logs sintéticos são a única forma de testar regras de deteção com dados controláveis e reproduzíveis.</div>
-            <div class="phase-why" lang-en><strong>Why simulation?</strong> Without a real compromisable environment, synthetic logs are the only way to test detection rules with controllable, reproducible data.</div>
+            <div class="phase-why" lang-pt><strong>Porquê simulação?</strong> Os geradores produzem três cenários distintos com probabilidades configuráveis: atividade normal (50%), brute force de um único IP (30%) e credential stuffing com múltiplos IPs (20%). Isto permite validar que cada regra ElastAlert dispara nos cenários corretos e não dispara nos incorretos.</div>
+            <div class="phase-why" lang-en><strong>Why simulation?</strong> The generators produce three distinct scenarios with configurable probabilities: normal activity (50%), single-IP brute force (30%), and multi-IP credential stuffing (20%). This allows validating that each ElastAlert rule fires on the correct scenarios and does not fire on the incorrect ones.</div>
           </div>
         </div>
 
@@ -915,8 +912,8 @@
             <div class="phase-title" lang-en>Kibana Dashboards</div>
             <div class="phase-body" lang-pt>Três dashboards: visão geral (taxa de eventos, top IPs, mapa geográfico), painel SSH (logins falhados por utilizador, incidentes de brute force) e painel Web (spike 404, histórico de sondagens).</div>
             <div class="phase-body" lang-en>Three dashboards: overview (event rate, top IPs, geographic map), SSH panel (failed logins by user, brute force incidents), and web panel (404 spike, probe history).</div>
-            <div class="phase-why" lang-pt><strong>Porquê documentar dashboards?</strong> Screenshots de dashboards funcionais em portfólio são mais credíveis do que qualquer certificação. Demonstram que se consegue responder a uma pergunta de negócio com dados.</div>
-            <div class="phase-why" lang-en><strong>Why document dashboards?</strong> Screenshots of working dashboards in a portfolio are more credible than any certification. They demonstrate the ability to answer a business question with data.</div>
+            <div class="phase-why" lang-pt><strong>Estrutura dos dashboards:</strong> visão geral com taxa de eventos por minuto e top IPs de origem; painel SSH com rácio falhas/sucessos por utilizador e linha temporal de incidentes; painel web com contagem de 404 por IP e lista de paths sondados. Cada dashboard responde a uma pergunta operacional específica.</div>
+            <div class="phase-why" lang-en><strong>Dashboard structure:</strong> overview with events-per-minute rate and top source IPs; SSH panel with failure/success ratio by user and incident timeline; web panel with 404 count by IP and list of probed paths. Each dashboard answers a specific operational question.</div>
           </div>
         </div>
 
@@ -930,8 +927,8 @@
         <span lang-en>Production Delta</span>
       </h2>
 
-      <p lang-pt>Este laboratório omite deliberadamente algumas configurações que seriam obrigatórias em produção. Documentar estas lacunas demonstra maturidade de engenharia — é mais honesto e informativo do que simular uma implantação completa.</p>
-      <p lang-en>This lab deliberately omits configurations that would be mandatory in production. Documenting these gaps demonstrates engineering maturity — it's more honest and informative than simulating a complete deployment.</p>
+      <p lang-pt>Este laboratório corre num único nó com segurança simplificada para reduzir fricção durante o desenvolvimento. As diferenças abaixo são as alterações necessárias antes de expor este stack a tráfego real ou dados sensíveis.</p>
+      <p lang-en>This lab runs on a single node with simplified security to reduce friction during development. The differences below are the changes required before exposing this stack to real traffic or sensitive data.</p>
 
       <div style="margin-top: 1.5rem; overflow-x: auto;">
         <table class="delta-table">
