@@ -4,12 +4,10 @@
    the rest of the site works normally.
    ============================================================ */
 const SITE_LINKS = {
-  // TODO: substitui pelo URL real do teu perfil de LinkedIn
-  linkedin: "",
+  linkedin: "https://www.linkedin.com/in/bruno-costa-2a3774209/",
 
   securitest: {
-    // TODO: cola aqui o link do repositório do SecuritEST no GitHub
-    repo: "",
+    repo: "https://github.com/BrunomnCosta/SecuritESTFrontend",
     // TODO: cola aqui o link da demo live (Azure Container Instance / frontend), se estiver no ar
     demo: ""
   },
